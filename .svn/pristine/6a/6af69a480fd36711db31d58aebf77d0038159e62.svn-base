@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class vsrcreationController extends Controller
+{
+    public function index(Request $request)
+    {
+        
+        $tmp = DB::table('sm_seqno')
+        ->where('seqtype','API_SAP')
+        ->update([
+                    'seqno' => DB::raw('seqno + 1')
+                ]);
+
+         
+        $tmp_vsr_no = DB::table('sm_seqno')->select('seqno')->where('seqtype','API_SAP')->first();
+        $tmp_vsr_no = $tmp_vsr_no->seqno;
+        $arr1 = array();
+
+        $attributes = $request->data;
+        foreach($request->data as $row)
+        {
+
+            $company_code = $row["BUCode"];
+            $env = DB::table('sm_lookup_company_env')->where('company_code', $company_code)->value('env');
+     
+
+            $row["filename"] = $tmp_vsr_no.".".$env;
+            $row["VsrNo"] = str_pad($tmp_vsr_no, 8, "0", STR_PAD_LEFT);
+            $row["CreatedDate"] = date('Y-m-d');
+            array_push($arr1, $row);
+        }
+        
+       
+        if ( DB::table('sm_staging_mms_vsr_api')->insert($arr1)) 
+        {
+            if (DB::update('exec SP_PROCESS_VSR_API ?', array($tmp_vsr_no.".".$env)))
+            {
+                return response([
+                    'message' => 'success'
+                ], 200);
+            }
+            else
+            {
+                return response([
+                    'message' => 'Error DB'
+                ], 400); 
+            }
+            
+        }
+        else
+        {
+            return response([
+                'message' => 'Failed'
+            ], 400);  
+        }
+        
+        
+    }
+}
