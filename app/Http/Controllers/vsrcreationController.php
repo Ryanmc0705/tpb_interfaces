@@ -124,7 +124,8 @@ class vsrcreationController extends Controller
         }
         $end_time = microtime(true);
         $time_elapsed_secs = round(($end_time - $start_time), 4);
-        DB::table("sm_execution_logs_vsr")->insert(["vsr_no"=>$vsr_no2,"execution_time"=>$time_elapsed_secs,"user_id" => $user_id]);
+        $date = date('Y/m/d H:i:s');
+        DB::table("sm_execution_logs_vsr")->insert(["vsr_no"=>$vsr_no2,"execution_time"=>$time_elapsed_secs,"user_id" => $user_id,"created_at" => $date]);
         
         if(!$existing){
             return response([
