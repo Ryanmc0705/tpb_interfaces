@@ -103,7 +103,7 @@ class vsrcreationController extends Controller
            
         }
         
-        foreach (array_chunk($arr1, 90) as $chunks) {
+        foreach (array_chunk($arr1, 101) as $chunks) {
             DB::table('sm_staging_mms_vsr_api')->insert($chunks);
         }
         $vsr_list = DB::table("sm_staging_mms_vsr_api")
