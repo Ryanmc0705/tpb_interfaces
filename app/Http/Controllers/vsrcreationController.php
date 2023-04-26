@@ -69,7 +69,7 @@ class vsrcreationController extends Controller
         foreach ($request->data as $row) {
 
             $company_code = $row["BUCode"];
-            $env = DB::table('sm_lookup_company_env')->where('company_code', $company_code)->value('env');
+            //$env = DB::table('sm_lookup_company_env')->where('company_code', $company_code)->value('env');
             $vsr_no2 = substr($row["CVSRNo"], 0, 8);
             $env = $row["ENV"];
             $filename = $row["CVSRNo"] . "." . $env;
