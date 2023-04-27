@@ -19,6 +19,6 @@ class UserController extends Controller
         return ['token' => $token->plainTextToken];
     }
     public function test(){
-        
+        echo "test";
     }
 }
